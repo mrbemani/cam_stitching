@@ -3,14 +3,21 @@
 
 import sys
 import os
+
+os.environ['OPENCV_OPENCL_DEVICE'] = 'NVIDIA:dGPU:GeForce GTX 1050'
+
 import time
 from typing import List, Tuple, Dict
 import numpy as np
 import scipy.linalg
 import cv2
 
-
+print ("isUsingOpenCL: ", cv2.ocl.useOpenCL())
 cv2.ocl.setUseOpenCL(True)
+print ("OpenCL Device: ", cv2.ocl.Device_getDefault().name())
+
+
+
 
 SCREEN_W, SCREEN_H = 1024, 640
 
@@ -224,7 +231,7 @@ while k != ord('q'):
                 mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
                 mask[mask!=0] = 255
                 kernel = np.ones((3, 3),np.uint8)
-                mask = cv2.erode(mask, kernel, 1)
+                mask = cv2.erode(cv2.UMat(mask), kernel, 1)
                 imasks[st_im_idx] = cv2.bitwise_not(im_mask)
                 im_mask = cv2.bitwise_or(im_mask, mask)
             cropped_result = cv2.bitwise_and(result, (255, 255, 255), mask=imasks[st_im_idx])

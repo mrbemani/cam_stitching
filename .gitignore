@@ -1,0 +1,8 @@
+*.pyc
+__pycache__
+*.bak
+*.log
+images/*.jpg
+images/*.png
+images/*.tif
+images/*.bmp
