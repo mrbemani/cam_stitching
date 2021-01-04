@@ -7,7 +7,9 @@ import time
 import numpy as np
 import cv2
 
+print ("isUsingOpenCL: ", cv2.ocl.useOpenCL())
 cv2.ocl.setUseOpenCL(True)
+print ("OpenCL Device: ", cv2.ocl.Device_getDefault().name())
 
 SRC_INVALID = 0
 SRC_VIDEO = 1
@@ -20,16 +22,16 @@ SRC_STEREO = 1
 
 src_video_inputs = [1, 2]
 
-src_image_list = ["images/1.jpg", "images/2.jpg", "images/3.jpg", 
-                  "images/4.jpg", "images/5.jpg", "images/6.jpg", 
+src_image_list = ["images/1.jpg", "images/2.jpg", "images/3.jpg",
+                  "images/4.jpg", "images/5.jpg", "images/6.jpg",
                   "images/7.jpg", "images/8.jpg", "images/9.jpg",
-                  "images/10.jpg", "images/11.jpg", "images/12.jpg"]
+                  "images/10.jpg"]
 
 use_compose = False
 
 src_images = []
 if SOURCE_TYPE == SRC_IMAGE:
-    src_images = [cv2.resize(im, (int((im.shape[1]/im.shape[0])*480), 480)) for im in [cv2.imread(x) for x in src_image_list]]
+    src_images = [cv2.resize(cv2.UMat(im), (int((im.shape[1]/im.shape[0])*480), 480)) for im in [cv2.imread(x) for x in src_image_list[:2]]]
 
 
 cv2.namedWindow(WINNAME)

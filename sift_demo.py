@@ -4,7 +4,7 @@
 import sys
 import os
 
-os.environ['OPENCV_OPENCL_DEVICE'] = 'NVIDIA:dGPU:GeForce GTX 1050'
+#os.environ['OPENCV_OPENCL_DEVICE'] = 'NVIDIA:dGPU:GeForce GTX 1050'
 
 import time
 from typing import List, Tuple, Dict
@@ -157,9 +157,9 @@ def computeMToIdx(idx, matchList: List):
         M_Matrices[k] = M
     return M_Matrices
 
-match_params = []    
-M_trans = [] 
-imasks = dict()  
+match_params = []
+M_trans = []
+imasks = dict()
 
 im = None
 k = -1
@@ -201,7 +201,7 @@ while k != ord('q'):
             frm = frames[st_im_idx]
             result = None
             M = np.identity(3)
-            if st_im_idx != base_view_idx: 
+            if st_im_idx != base_view_idx:
                 M = M_trans[st_im_idx]
                 if M.all() == np.identity(3).all():
                     continue
@@ -221,7 +221,7 @@ while k != ord('q'):
             #print (M)
             #print (T_R_M)
             TRM = T.dot(M)
-            if np.linalg.det(TRM) <= 0.05: 
+            if np.linalg.det(TRM) <= 0.05:
                 print("-[{}]-".format(st_im_idx), end="", flush=True)
                 continue
             result = cv2.warpPerspective(frm, TRM, (SCREEN_W, SCREEN_H))
