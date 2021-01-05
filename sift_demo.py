@@ -12,8 +12,8 @@ import numpy as np
 import scipy.linalg
 import cv2
 
-print ("isUsingOpenCL: ", cv2.ocl.useOpenCL())
 cv2.ocl.setUseOpenCL(True)
+print ("isUsingOpenCL: ", cv2.ocl.useOpenCL())
 print ("OpenCL Device: ", cv2.ocl.Device_getDefault().name())
 
 
@@ -164,7 +164,9 @@ imasks = dict()
 im = None
 k = -1
 m_i = 0
+t_consume = 1
 while k != ord('q'):
+    tick_start = cv2.getTickCount()
     frames = []
     stitching_failed = False
     h, w = IMAGE_H, int(IMAGE_H*(4./3.))
@@ -217,9 +219,6 @@ while k != ord('q'):
             #M = T.dot(M)
             #M = np.pad(M, (0,1))
             #M[3, 3] = 1
-            #T_R_M = K.dot(K_RT).dot(M)#dot(T.dot(R).dot(T_inv).dot())
-            #print (M)
-            #print (T_R_M)
             TRM = T.dot(M)
             if np.linalg.det(TRM) <= 0.05:
                 print("-[{}]-".format(st_im_idx), end="", flush=True)
@@ -238,17 +237,19 @@ while k != ord('q'):
             #if st_im_idx == base_view_idx:
             im = cv2.add(im, cropped_result)
 
-        print ("+", end="", flush=True)
+        #print ("+", end="", flush=True)
         m_i += 1
     if not DO_STITCHING:# or stitching_failed:
         im = np.concatenate(frames, axis=1)
     if im is not None:
+        cv2.putText(im, "FPS: " + str(1//t_consume), (10, 30), 1, 2, (0, 255, 255))
         cv2.imshow(WINNAME, im)
         k = cv2.waitKey(1)
     else:
         k = cv2.waitKey(1)
     if k == ord('s'):
         cv2.imwrite("saved2.jpg", im)
+    t_consume = (cv2.getTickCount() - tick_start) / cv2.getTickFrequency()
 for cap in caps:
     cap.release()
 cv2.destroyAllWindows()
